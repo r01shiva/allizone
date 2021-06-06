@@ -1,0 +1,42 @@
+<div class="card">
+  <div class="card-header ">
+    <h3 class="card-title"><%= action_name.capitalize%> Movies </h3>
+  </div>
+  <%= form_for resource do |f| %>
+    <div class="card-body m-2">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <%=f.label :name, 'Name' %>
+            <span class="error">*</span>
+            <%=f.text_field :name, class: 'form-control', placeholder: 'Enter Name' %>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <%= f.label :file %>
+            <% if f.object.file.attached? %>
+              <%= link_to  rails_blob_path(resource.file, disposition: 'preview'), target: '_blank' do %>
+                <%= fas_icon 'id-badge', text: 'Preview' %>
+              <% end -%>
+            <% end -%>
+            <div class="input-group">
+              <div class="custom-file">
+                <%=f.file_field :file, class: 'form-control' %>
+                <%= f.label :file, class: 'custom-file-label file' %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div id="form-btn" class="col-md-12">
+          <div class="form-group float-right">
+            <%= f.submit 'Save', class: 'btn btn-primary mt-2 mw-100' %>
+            <%= link_to 'Cancel', movies_path, class: 'btn btn-info mt-2 mw-100' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end -%>
+</div>

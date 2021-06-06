@@ -1,0 +1,44 @@
+<h1>Movies</h1>
+<div>
+  <table class = "table table-bordered" style="width:100%">
+    <thead>
+      <%= link_to new_movie_path do%>
+      Add
+      <% end -%>
+      <tr>
+        <th > Name </th>
+        <th > URL </th>
+        <th > Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @movies_collection.each do |resource| %>
+        <tr>
+          <td>
+            <%= resource.name %>
+          </td>
+          <td>
+            <%= link_to (rails_blob_url(resource.file, disposition: :attachment)), target: :_blank do %>
+              <%= resource.name %>
+            <% end %>
+          </td>
+          <td>
+              <%= link_to edit_movie_path resource, {'title' => 'Edit', 'data-toggle' => 'tooltip'} do%>
+                Edit
+              <% end -%>
+              <%= link_to movie_path resource, {'title' => 'Delete', 'data-toggle' => 'tooltip', 'method' => 'delete', 'data' => { 'confirm' => 'Are you sure?' } }  do%>
+                Delete
+              <% end -%>
+          </td>
+        </tr>
+      <% end -%>
+    </tbody>
+  </table>
+</div>
+<%= javascript_pack_tag 'my_js' %>
+<script type="text/javascript">
+  document.addEventListener("turbolinks:load", () => {
+    alert("page has loaded!");
+    debugger
+  });
+</script>
