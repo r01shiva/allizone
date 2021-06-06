@@ -1,0 +1,81 @@
+<script>
+  var new_resource_path = "<%= !!defined?(new_resource_path) ? new_resource_path : '' %>"
+  var table_id = "<%= !!defined?(table_id) ? table_id : '' %>"
+  var add_new_btn_text = "<%= !!defined?(add_new_btn_text) ? add_new_btn_text : 'Add New' %>"
+  $(document).ready(function() {
+    $('[data-toggle="tooltip"]').tooltip();
+    if(table_id != ''){
+      $.fn.dataTable.moment( 'DD-MMM-YYYY' );
+      $.fn.dataTable.moment( 'HH:mm A' );
+      $.fn.dataTable.moment( 'HH:mmA, DD-MMM-YYYY' );
+      dataTable = $('#'+table_id).DataTable({
+        columnDefs:[
+        {
+          orderable: false,
+          targets: -1,
+        }
+        ],
+        "order": [],
+        "pageLength": 100
+      });
+      $( "#"+table_id+"_wrapper").children()[1].style.overflow = "auto"
+      document.addEventListener("turbolinks:before-cache", function() {
+        if (dataTable !== null) {
+         dataTable.destroy();
+         dataTable = null;
+        }
+      });
+
+    }
+    add_scroll();
+  });
+
+  function add_scroll(){
+    $(".table").parent().addClass("scroll-table");
+    $(".table").parent().addClass("print-no-scroll");
+  }
+</script>
+<% if !!defined?(table_id) && !!defined?(new_resource_path) && !!defined?(resource_class) && !!defined?(check_permission) && !(check_permission) %>
+  <script>
+    $(document).ready(function(){
+      add_btn(new_resource_path, add_new_btn_text);
+    })
+
+    function status_search_col(){
+      var status_search_html  = '<label>Search:<input type="search" class="form-control form-control-sm" name="status_search" id="status_search" placeholder="Search by Status" title="Can search for space separated statuses" data-toggle="tooltip"></label>'
+      $('.dataTables_filter').append(status_search_html);
+    }
+
+    function add_btn(href_path, btn_text){
+      var add_new_btn =
+      '<div class="float-right ml-md-3" id="add_new_btn">'+
+        '<a href= "'+href_path+'" class="btn btn-primary add-new-btn">'+
+          '<i class="fas fa-plus"></i>'+
+          btn_text+'</a>'
+    	$('.dataTables_filter').append(add_new_btn);
+    }
+  </script>
+<% end %>
+<% if !!defined?(table_id) && !!defined?(status_search_col) && status_search_col == true %>
+  <script>
+    $(document).ready(function(){
+      status_search_col();
+      $('#status_search').on('keyup click', function(){
+        filter_status();
+      })
+    })
+
+    function status_search_col(){
+      var status_search_html  = '<label>Search:<input type="search" class="form-control form-control-sm" name="status_search" id="status_search" placeholder="Search by Status" ></label>'
+      $('.dataTables_filter').append(status_search_html);
+      $('[data-toggle="tooltip"]').tooltip();
+    }
+    function filter_status(){
+      $('#'+table_id).DataTable().column(-2).search(
+          $('#status_search').val().replace(/\s+/g, "|"),
+          true,
+          false
+      ).draw();
+    }
+  </script>
+<% end -%>
